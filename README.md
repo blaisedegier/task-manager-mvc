@@ -46,9 +46,9 @@ A simple **ASP.NET Core MVC** web application for managing tasks with full **CRU
 
 ```text
 BasicTaskManager/
-├── BasicTaskManager.sln                              # Visual Studio solution
+├── BasicTaskManager.sln                  # Visual Studio solution
 ├── BasicTaskManager/
-│   ├── BasicTaskManager.csproj  # Project file (.NET 8)
+│   ├── BasicTaskManager.csproj           # Project file (.NET 8)
 │   ├── Program.cs                        # Application entry point & middleware
 │   ├── appsettings.json                  # App configuration
 │   ├── Controllers/

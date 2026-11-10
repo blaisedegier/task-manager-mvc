@@ -1,6 +1,6 @@
 # Task Manager
 
-A small ASP.NET Core 8 MVC web app for creating, editing and deleting tasks with a title, description and deadline.
+A small ASP.NET Core 10 MVC web app for creating, editing and deleting tasks with a title, description and deadline.
 
 [![CI](https://github.com/blaisedegier/task-manager-mvc/actions/workflows/ci.yml/badge.svg)](https://github.com/blaisedegier/task-manager-mvc/actions/workflows/ci.yml)
 
@@ -32,7 +32,7 @@ antiforgery token that the form tag helper emits.
 
 ## Running it
 
-Prerequisite: the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
+Prerequisite: the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 
 ```bash
 git clone https://github.com/blaisedegier/task-manager-mvc.git
@@ -45,7 +45,7 @@ The app listens on <http://localhost:5057> (the `http` launch profile). No confi
 
 ## Tech
 
-ASP.NET Core 8 MVC, Razor views, Bootstrap 5, jQuery Validation.
+ASP.NET Core 10 MVC (.NET 10), Razor views, Bootstrap 5, jQuery Validation.
 
 ## Known limitations
 

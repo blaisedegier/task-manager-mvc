@@ -1,175 +1,54 @@
-# Basic Task Manager ✅
+# Task Manager
 
-A simple **ASP.NET Core MVC** web application for managing tasks with full **CRUD** (Create, Read, Update, Delete) functionality. Built with .NET 8, Razor views, and Bootstrap 5.
+A small ASP.NET Core 8 MVC web app for creating, editing and deleting tasks with a title, description and deadline.
 
----
+[![CI](https://github.com/blaisedegier/task-manager-mvc/actions/workflows/ci.yml/badge.svg)](https://github.com/blaisedegier/task-manager-mvc/actions/workflows/ci.yml)
 
-## Table of Contents
+## What it does
 
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-- [Usage](#usage)
-- [Routes](#routes)
-- [Data Model](#data-model)
-- [Known Limitations](#known-limitations)
+- Lists every task in a table, earliest deadline first.
+- Adds a task with a required title (up to 100 characters), an optional description (up to 500
+  characters) and a required deadline.
+- Edits a task in place, and deletes one after a confirmation page.
+- Validates forms in the browser (jQuery unobtrusive validation) and again on the server.
 
----
+## How it works
 
-## Features
+`TaskController` holds the tasks in a static `List<TaskModel>`. MVC creates a new controller per request,
+so the list has to be static to survive between requests, and because requests run concurrently every
+read and write goes through a single lock. Ids are assigned as one more than the current highest id.
 
-- **View tasks:** Browse all tasks in a clean, tabular layout
-- **Create tasks:** Add new tasks with a title, description, and deadline
-- **Edit tasks:** Update existing task details
-- **Delete tasks:** Remove tasks with a confirmation step
-- **Client-side validation:** Instant form feedback via jQuery unobtrusive validation
-- **Responsive UI:** Mobile-friendly design powered by Bootstrap 5
+The validation rules live once, as data annotations on `TaskModel`; Razor tag helpers turn them into
+client-side rules and `ModelState` enforces them on the server. Every POST action validates the
+antiforgery token that the form tag helper emits.
 
----
+| Method | Route | Purpose |
+| --- | --- | --- |
+| GET | `/` | Landing page |
+| GET | `/Task` | Task list |
+| GET, POST | `/Task/Create` | Add a task |
+| GET, POST | `/Task/Edit/{id}` | Edit a task |
+| GET, POST | `/Task/Delete/{id}` | Confirm and delete a task |
 
-## Tech Stack
+## Running it
 
-| Layer      | Technology                                                           |
-| ---------- | -------------------------------------------------------------------- |
-| Framework  | [ASP.NET Core MVC](https://learn.microsoft.com/aspnet/core) (.NET 8) |
-| Language   | C# 12                                                                |
-| Views      | Razor (`.cshtml`)                                                    |
-| CSS        | [Bootstrap 5](https://getbootstrap.com/)                             |
-| JavaScript | [jQuery](https://jquery.com/) + jQuery Validation                    |
-| Storage    | In-memory (`List<TaskModel>`)                                        |
-
----
-
-## Project Structure
-
-```text
-BasicTaskManager/
-├── BasicTaskManager.sln                  # Visual Studio solution
-├── BasicTaskManager/
-│   ├── BasicTaskManager.csproj           # Project file (.NET 8)
-│   ├── Program.cs                        # Application entry point & middleware
-│   ├── appsettings.json                  # App configuration
-│   ├── Controllers/
-│   │   ├── HomeController.cs             # Home & Privacy pages
-│   │   └── TaskController.cs             # Task CRUD actions
-│   ├── Models/
-│   │   ├── TaskModel.cs                  # Task entity with validation
-│   │   └── ErrorViewModel.cs             # Error page model
-│   ├── Views/
-│   │   ├── Home/                         # Home & Privacy views
-│   │   ├── Task/                         # Task CRUD views
-│   │   └── Shared/                       # Layout & partial views
-│   ├── Properties/
-│   │   └── launchSettings.json           # Local launch profiles
-│   └── wwwroot/                          # Static assets
-│       ├── css/site.css
-│       ├── js/site.js
-│       └── lib/                          # Vendored client libraries
-│           ├── bootstrap/
-│           ├── jquery/
-│           ├── jquery-validation/
-│           └── jquery-validation-unobtrusive/
-└── README.md
-```
-
----
-
-## Prerequisites
-
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (or later)
-
-Verify your installation:
+Prerequisite: the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
 
 ```bash
-dotnet --version
+git clone https://github.com/blaisedegier/task-manager-mvc.git
+cd task-manager-mvc
+dotnet build BasicTaskManager.sln -c Release
+dotnet run --project BasicTaskManager/BasicTaskManager.csproj
 ```
 
----
+The app listens on <http://localhost:5057> (the `http` launch profile). No configuration is needed.
 
-## Getting Started
+## Tech
 
-1. **Clone the repository**
+ASP.NET Core 8 MVC, Razor views, Bootstrap 5, jQuery Validation.
 
-   ```bash
-   git clone https://github.com/<your-username>/BasicTaskManager.git
-   cd BasicTaskManager
-   ```
+## Known limitations
 
-2. **Restore dependencies**
-
-   ```bash
-   dotnet restore
-   ```
-
-3. **Build the project**
-
-   ```bash
-   dotnet build
-   ```
-
-4. **Run the application**
-
-   ```bash
-   dotnet run --project BasicTaskManager
-   ```
-
-5. **Open in your browser**
-
-   | Profile | URL                      |
-   | ------- | ------------------------ |
-   | HTTP    | <http://localhost:5057>  |
-   | HTTPS   | <https://localhost:7022> |
-
----
-
-## Usage
-
-| Action        | How                                                        |
-| ------------- | ---------------------------------------------------------- |
-| View tasks    | Navigate to `/Task` to see all tasks in a table            |
-| Create a task | Click **Create New Task** and fill in the form             |
-| Edit a task   | Click the **Edit** link next to any task                   |
-| Delete a task | Click **Delete**, review the details, then confirm removal |
-
----
-
-## Routes
-
-The application uses ASP.NET Core's conventional routing pattern:
-`{controller=Home}/{action=Index}/{id?}`
-
-| Method | Route               | Description              |
-| ------ | ------------------- | ------------------------ |
-| `GET`  | `/`                 | Home page                |
-| `GET`  | `/Home/Privacy`     | Privacy policy           |
-| `GET`  | `/Task`             | List all tasks           |
-| `GET`  | `/Task/Create`      | Create task form         |
-| `POST` | `/Task/Create`      | Submit new task          |
-| `GET`  | `/Task/Edit/{id}`   | Edit task form           |
-| `POST` | `/Task/Edit/{id}`   | Submit task update       |
-| `GET`  | `/Task/Delete/{id}` | Delete confirmation page |
-| `POST` | `/Task/Delete/{id}` | Confirm and delete task  |
-
----
-
-## Data Model
-
-### `TaskModel`
-
-| Property      | Type       | Constraints                     |
-| ------------- | ---------- | ------------------------------- |
-| `Id`          | `int`      | Auto-assigned                   |
-| `Title`       | `string?`  | Required, max 100 characters    |
-| `Description` | `string?`  | Optional, max 500 characters    |
-| `Deadline`    | `DateTime` | Required, date format validated |
-
----
-
-## Known Limitations
-
-- **No persistent storage:** Tasks are stored in an in-memory list and are lost when the application restarts. To add persistence, integrate a database via Entity Framework Core.
-- **No authentication:** The app is fully anonymous with no user accounts or access control.
-- **No automated tests:** Unit and integration tests are not yet included.
-- **Not thread-safe:** The static in-memory list is not protected against concurrent access, which is acceptable for local/demo use.
+- Tasks are held in memory only and are lost when the app restarts.
+- There are no user accounts: everyone who can reach the app shares one task list.
+- There are no automated tests.

@@ -52,3 +52,7 @@ ASP.NET Core 10 MVC (.NET 10), Razor views, Bootstrap 5, jQuery Validation.
 - Tasks are held in memory only and are lost when the app restarts.
 - There are no user accounts: everyone who can reach the app shares one task list.
 - There are no automated tests.
+
+## Licence
+
+MIT. See [LICENSE](LICENSE).
